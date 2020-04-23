@@ -1,4 +1,5 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {HashRouter } from 'react-router-dom';
 import {Switch, Route} from 'react-router';
 import './App.css';
@@ -9,28 +10,27 @@ import { Details } from './Pages/Details';
 import { Encounters } from './Pages/Encounters';
 import { Maps } from './Pages/Maps';
 import {Upload} from './Pages/Upload';
-import { WorldBuilding } from './Pages/WorldBuilding';
+import { Setting } from './Pages/Setting';
+import{Ad} from './Pages/Ad';
+
 
 function App() {
   return (
     <HashRouter>
-    <div className="App">
-      <header className="App-header">
-        <p>
-          DGenerator.com, for all your random needs
-        </p>
+      <Ad/>
+      <div className="App">
         <NavComponent />
-        <Switch>
+      <Switch>
         <Route path="/Quick_Tools" component={QuickTools} />
         <Route path="/About" component={About} />
         <Route path="/Details" component={Details} />
         <Route path="/Encounters" component={Encounters} />
         <Route path="/Maps" component={Maps} />
         <Route path="/Upload" component={Upload} />
-        <Route path="/World_Building" component={WorldBuilding} />
+        <Route path="/Setting" component={Setting} />
         </Switch>
-      </header>
     </div>
+    <Ad/>
     </HashRouter>
   );
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export class WorldBuilding extends React.Component {
+export class Ad extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -10,8 +10,8 @@ export class WorldBuilding extends React.Component {
     
     render(){
         return (
-            <div>
-            <p>This is the world building page</p>
+            <div className="AdGutter">
+            <p>I'm an ad gutter</p>
             </div>
         )
     }
