@@ -3,6 +3,7 @@
   height: 100%;
   margin: 0 auto;
   display: table-cell;
+  overflow: visible;
 }
 
 .AdGutter{
@@ -12,9 +13,15 @@
 }
 
 body{
-  width: 100vw;
+  min-width: calc(100vw - 20px);
   height: 100vh;
   display: table;
+}
+
+.FillMe{
+  padding-top: 5px;
+  height: 2em;
+  width: 250px;
 }
 
 #root{
@@ -23,37 +30,69 @@ body{
   display: table-row;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.Tooltip {
+  position: relative;
+  display: inline-block;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.Tooltip .Tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 35%;
+  margin-left: -35%;
+  min-width: 200px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.Tooltip .Tooltiptext1 {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -50%;
+  min-width: 200px;
 }
 
-.App-link {
-  color: #61dafb;
+.Tooltip:hover .Tooltiptext {
+  visibility: visible;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Tooltip:hover .Tooltiptext1 {
+  visibility: visible;
+}
+
+
+.ObjectDisplay{ /* A div object meant to hold a complete object given from the backend, IE a civilization or person */
+width: 100%;
+padding-bottom: 20px;
+}
+
+.ObjectMajor{ /*A major heading piece or section of an object*/
+border: solid;
+}
+
+.ObjectMinor{ /*A minor piece or sub-object of the main object */
+border: solid;
+}
+
+.ObjKey{ /*A key of the object, IE Economic Focus or Vice*/
+border: solid;
+width:33%;
+}
+
+.ObjVal{ /*A value of the object, IE tourism or Gluttony*/
+border: solid;
+width: 33%;
 }
