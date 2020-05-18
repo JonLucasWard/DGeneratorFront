@@ -3,6 +3,8 @@ import {Collapse, Button} from 'reactstrap';
 import {NavigateNext, ExpandMore} from '@material-ui/icons';
 import {axios, errorLogger} from '../Etc/axiosU';
 import {Civilization} from '../Models/Civilization';
+import {SvgIcon} from '@material-ui/core';
+import SavePage from '../Etc/SavePage';
 
 const callSetting = "/Setting/";
 
@@ -11,7 +13,7 @@ export class Setting extends React.Component {
         super(props); //apply those props to this component
         this.state = { //state, unique characteristics of this component
             //booleans on whether or not the user chose to open a section of the page, false is default
-            planet: false,
+            worldmap: false,
             end: false,
             civs: false,
             reli: false,
@@ -36,9 +38,9 @@ export class Setting extends React.Component {
 
     arrow(key){ //accept string value that correlates to a state key
         if(this.state[key]){ //passing in the key value to the state should return a boolean value, if true, the Collapse is open and the symbol should change accordingly, else, it is closed
-            return <ExpandMore/>
+            return <SvgIcon component={ExpandMore} style={{color:"white"}}/> //SvgIcon allows for editing of image, component = image we want, then apply CSS style
         } else {
-            return <NavigateNext/>
+            return <SvgIcon component={NavigateNext} style={{color:"white"}}/>
         } //this does not assign state, so it does not need to be bound
     } //we want this so the User has visual feedback as to which state they are in, to KNOW that the field is supposed to be open or not
 
@@ -61,12 +63,27 @@ export class Setting extends React.Component {
     }
 
     handleCivNumber(event){
-        this.setState({civsInSetting: event.target.value});
+        if(event.target.value > 0){  //if the number is greater than 0, no issues
+        this.setState({civsInSetting: event.target.value});}
+        else{ //if number is 0 or negative, ensure no crash
+            let x;
+            if(event.target.value === 0){ x = -1;} //if 0, set x to -1
+            x = event.target.value * -1; //make x a positive number, assuming it was negative
+            this.setState({civsInSetting: x}); //set the value accordingly
+        }
+    }
+
+    bottomButtons(){ //render 2nd button at bottom of list of results, makes it easier for user to continue loading new content
+        if(this.state.civilization === undefined || this.state.civilization.length === 0){
+        } else {
+            return <div> <p style={{display:"inline"}}>Number of Civs in your Setting: </p><input type="number" value={this.state.civsInSetting} onChange={this.handleCivNumber}></input> &nbsp; <Button id="makeCiv" value={this.state.civsInSetting} onClick={this.makeCiv} /*Need to make a way to set value soon*/>Create Civilization</Button></div>;
+        }
     }
 
     render(){
         return (
             <div>
+
             <h3 style={{width:"100%", display:"inline-block"}}
             //h3 tag to hold buttons that will show more content on the page. Width 100% to take up size of main "app space". Inline-block so that they are the same height
             //as their children
@@ -74,10 +91,10 @@ export class Setting extends React.Component {
                 <div style={{float:"left"}}
                 //move button to far left side of app screen
                 >
-                    <Button id="planet" value={this.state.planet} onClick={this.toggle}
+                    <Button id="worldmap" value={this.state.worldmap} onClick={this.toggle}
                     //Use reactstrap button and add id and value attributes, both lining up with state key-values, on click call the toggle function, element data is automatically passed
-                    >Planet Map</Button>
-                    {this.arrow("planet")
+                    >World Map</Button>
+                    {this.arrow("worldmap")
                     //call arrow function, passing in desired key name as a string
                 }
                 </div>
@@ -85,7 +102,12 @@ export class Setting extends React.Component {
             <Collapse isOpen={this.state.planet}
             //use reactstrap Collapse component just after the H3 line, will open based on the state of a given key, operates on boolean logic
             >
-                Blah blah blah
+                <p>There are already plenty of excellent map generators, what follows is a list of these which I felt appropriate for making an entire "world" setting.</p>
+                <p>Please support the creators of these wonderful resources.</p>
+                <p><a href='https://donjon.bin.sh/fantasy/world/'>Donjon Fantasy World</a>, this will create a very large planet map with colorations for altitude, symbols for geographic zones, and lists of notable locations.</p>
+                <p><a href='https://donjon.bin.sh/scifi/world/'>Donjon SciFi World</a>, this will create a planet map with altitude coloration. You have more options for how the map is laid out such as Mercator, 2 images of a round world, spinning globe, etc. Finer details include planet gravity and mineral composition, rather than possible city locations.</p>
+                <p><a href='https://donjon.bin.sh/scifi/system/'>Donjon Star System</a>, this will create a list of planets with simple images, detailing some scientific facts about each. More conceptual for a solar system layout than a firm map of locations.</p>
+                <p><a href='https://azgaar.github.io/Fantasy-Map-Generator/'>Azgaar Fantasy World</a>, a highly customizable and beautiful map. Generally it can only handle about 2 continents, and you will need to find your preferred settings of use.</p>
             </Collapse>
 
             <h3 style={{width:"100%", display:"inline-block"}}
@@ -107,10 +129,11 @@ export class Setting extends React.Component {
                 </div>
             </h3>
             <Collapse isOpen={this.state.civs}>
-                <p style={{display:"inline"}}>Number of Civs in your Setting:</p><input type="number" value={this.state.civsInSetting} onChange={this.handleCivNumber}></input>
-                <br/>
-                <Button id="makeCiv" value={this.state.civsInSetting} onClick={this.makeCiv} /*Need to make a way to set value soon*/>Make Something</Button>
+                <p style={{display:"inline"}}>Number of Civs in your Setting: </p><input type="number" value={this.state.civsInSetting} onChange={this.handleCivNumber}></input>
+                &nbsp; {/*this is just hard coding a space when necessary*/}
+                <Button id="makeCiv" value={this.state.civsInSetting} onClick={this.makeCiv} /*Need to make a way to set value soon*/>Create Civilization</Button>
                 {this.loadData("civilization")}
+                {this.bottomButtons()}
                 
             </Collapse>
 

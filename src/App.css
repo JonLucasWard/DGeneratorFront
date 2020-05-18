@@ -1,41 +1,74 @@
-.App {
-  text-align: center;
-  height: 100%;
+.App { /*Basics for the application as a whole, minus ad spaces*/
+  text-align: center; /*Generally we want centered text*/
+  height: 100%; /*The app should take the entire "height" of the screen, or total scrollable space*/
   margin: 0 auto;
-  display: table-cell;
-  overflow: visible;
+  display: table-cell; /*The app treats itself like a table cell and sticks to its own allowed "space", makes it so it doesn't interfere with ads*/
+  overflow: visible; /*If it ever needs to have more space, the App area is allowed to grow*/
 }
 
-.AdGutter{
-  background-color: green;
-  display: table-cell;
-  width: 160px;
+.AdGutter{ /*Space we allow for banner ads on the sides*/
+  background-color: green; 
+  display: table-cell; /*Each ad has its own allotted "space", doesn't intefere with App*/
+  width: 160px; /*Each ad is 160px wide*/
 }
 
-body{
-  min-width: calc(100vw - 20px);
-  height: 100vh;
-  display: table;
+body{ /*Basically the entire website*/
+  min-width: calc(100vw - 20px); /*The app takes up the entire screen width EXCEPT for 10 pixels on each side, this anticipates the scrollbar so nothing is accidentally hidden*/
+  height: 100vh; /*The body will take up 100% of the view screen area*/
+  display: table; /*Generally this whole thing is treated as a "table"*/ 
+  font-family: 'Times New Roman', Times, serif; /*Generally all fonts will be one from this list*/
+  font-size: 20px; /*All fonts are of this size, nice and readable, not pointlessly big*/
+  background-color: #2e2e38; /*Slightly lighter than black, easy to read off from*/
 }
 
-.FillMe{
-  padding-top: 5px;
-  height: 2em;
-  width: 250px;
+.FillMe{ /*A class for certain textarea fields that we want the users to input data to*/
+  padding-top: 5px; /*Helps to center the space a bit*/
+  height: 2em; /*Keeps the space mostly in-line with the text it is nested in*/
+  width: 250px; /*A "common sense" amount, primarily for the MnM fields*/
 }
 
-#root{
-  height: 100%;
-  width: calc(100% - 300px);
-  display: table-row;
+input{ /*Inputs that users need, just ensuring font is consistent*/
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 20px;
 }
 
-.Tooltip {
-  position: relative;
-  display: inline-block;
+textarea{ /*As per above, due to the large nature of this object, font size is slightly smaller, it still looks the same*/
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
 }
 
-.Tooltip .Tooltiptext {
+#root{ /*An element the application puts into the body. Matters for non-ad things, where our math happens!*/
+  height: 100%; /*The application takes up 100% of the height it is allowed to take up*/
+  width: calc(100% - 300px); /*The app takes up full width BUT leaves 300 px available on the sides, room for the ads*/
+  display: table-row; /*We treat this like a row in the table that is the body tag*/
+}
+
+.Tooltip { /*Text that when hovered over, will display more text*/
+  position: relative; /* MANDATORY! Tooltips will revolve around this element, their maths depend on wherever this is*/
+  display: inline; /*Considered "inline", acts as though it's just normal text, which is what we want*/
+  color: white; /* so we can read*/
+}
+
+.Tooltip .Tooltiptext { /*This tooltip text CSS ONLY occurs if it is a child of the Tooltip element*/
+  visibility: hidden; /*normally we don't see this*/
+  background-color: black;
+  color: #fff; /*text color*/
+  text-align: center;
+  border-radius: 6px; /*slightly rounded*/
+  padding: 5px 0; /*Little space on top and bottom*/
+  font-size: 18px;
+  
+  /* Position the tooltip */
+  position: absolute; /*It is ALWAYS placed at... relative to Tooltip...*/
+  z-index: 1; /*It is "above" other text*/
+  top: 100%; /*It is double the distance DOWN from the original Tooltip element*/
+  left: 50%; /*It's slightly left of the original tooltip element, this helps center it*/
+  margin-left: -60px; /*As per above, more fine tuned help*/
+  min-width: 200px; /*Resulting box is AT LEAST 200px wide, needed for most explanations*/
+  font-weight: normal; /*Not bolded, sometimes this actually matters (IE if tooltip is also bolded)*/
+}
+
+.Tooltip .Tooltiptext1 { /*As previous, but it appears ABOVE the text*/
   visibility: hidden;
   background-color: black;
   color: #fff;
@@ -44,55 +77,83 @@ body{
   padding: 5px 0;
   position: absolute;
   z-index: 1;
-  top: 150%;
-  left: 35%;
-  margin-left: -35%;
-  min-width: 200px;
-}
-
-.Tooltip .Tooltiptext1 {
-  visibility: hidden;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 100%;
+  bottom: 100%; /*This makes it spawn above*/
   left: 50%;
   margin-left: -50%;
   min-width: 200px;
+  font-size: 18px;
+  font-weight: normal;
 }
 
+.Tooltip .Tooltiptext2 { /*As per above, but spawns to the LEFT!*/
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 2px;
+  font-size: 18px;
+  font-weight: normal;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%; /*Main bit that makes it spawn to the left*/
+  min-width: 200px;
+}
+
+/*The following 3 make tooltiptext visible when the tooltip text is hovered over. Right? Right. */
 .Tooltip:hover .Tooltiptext {
   visibility: visible;
 }
-
 .Tooltip:hover .Tooltiptext1 {
   visibility: visible;
 }
+.Tooltip:hover .Tooltiptext2 {
+  visibility: visible;
+}
 
+td{ /*Generic table cell, we want double borders on left and right, between each other. Edges are normally taken care of elsewhere*/
+  border-left: double;
+  border-right: double;
+}
+
+tr{ /*Generic row, I like the ridge border, that's it*/
+  border: ridge;
+}
+
+.SubThirdsCell{ /*Class for cells that are in tables with 3 columns, but are rows in rows*/
+  border-left: none; /*This can mess with some borders, so we set it to none*/
+  border-right: none;
+  width: 33%; /*Cell always takes up at least 1/3rd of total allowed space*/
+}
+
+.SubThirdsRow{ /*3 column tables, generic rows within rows*/
+  border: double; /*I like double border*/
+  border-left: none; /*Don't worry about borders left and right, we let the cells handle this*/
+  border-right: none;
+  border-radius: 25px; /*Slightly rounds the entire table at the tops and bottoms, I find it helpful to see when an object begins and ends*/
+}
+
+.ThirdsCell{ /*Generic cell that exists in a table with 3 columns, each cell must take 1/3rd of total allowed space*/
+  width: 33%;
+}
+
+#SectionCell{ /*Class for table cell headers, bolded, slightly bigger text*/
+  font-weight: bold;
+  font-size: 20px;
+}
 
 .ObjectDisplay{ /* A div object meant to hold a complete object given from the backend, IE a civilization or person */
-width: 100%;
-padding-bottom: 20px;
+width: 100%; /*Takes up 100% of allowed space*/
+padding-bottom: 20px; /*A bit of "breathing room" from other objects*/
+background-color: #4e575c; /*Greyish black, different from body black, but still easy to read white off from, easy on the eyes*/
+border-radius: 25px; /*Slightly rounded, helps to see when object begins and ends*/
 }
 
-.ObjectMajor{ /*A major heading piece or section of an object*/
-border: solid;
-}
-
-.ObjectMinor{ /*A minor piece or sub-object of the main object */
-border: solid;
-}
-
-.ObjKey{ /*A key of the object, IE Economic Focus or Vice*/
-border: solid;
-width:33%;
-}
-
-.ObjVal{ /*A value of the object, IE tourism or Gluttony*/
-border: solid;
-width: 33%;
+p{ /*Generic text details*/
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 18px;
+  color: #dddddd;
 }
