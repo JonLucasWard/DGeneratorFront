@@ -150,7 +150,7 @@ export class Civilization extends React.Component {
 
                         <TableRow>
                             <TableCell id="SectionCell" align="center" colspan={3}>
-                                <p className="Tooltip">Area Controlled:&nbsp;
+                                <p id="SectionCell" className="Tooltip">Area Controlled:&nbsp;
                                     <span className="Tooltiptext">How much space does this civilization actually control?</span> 
                                 </p>
                                 <p className="Tooltip">{this.props.civilization.AreaControl}
@@ -169,7 +169,7 @@ export class Civilization extends React.Component {
 
                         <TableRow>
                             <TableCell id="SectionCell" colspan={3} align="center">
-                                <p className="Tooltip">Culture
+                                <p id="SectionCell" className="Tooltip">Culture
                                     <span className="Tooltiptext">The overarching culture shared by all members of this civilization.</span></p>
                             </TableCell>
                         </TableRow>

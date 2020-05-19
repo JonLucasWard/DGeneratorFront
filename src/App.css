@@ -66,6 +66,8 @@ textarea{ /*As per above, due to the large nature of this object, font size is s
   margin-left: -60px; /*As per above, more fine tuned help*/
   min-width: 200px; /*Resulting box is AT LEAST 200px wide, needed for most explanations*/
   font-weight: normal; /*Not bolded, sometimes this actually matters (IE if tooltip is also bolded)*/
+  max-height: 200px;
+  overflow-y: scroll;
 }
 
 .Tooltip .Tooltiptext1 { /*As previous, but it appears ABOVE the text*/
@@ -83,6 +85,9 @@ textarea{ /*As per above, due to the large nature of this object, font size is s
   min-width: 200px;
   font-size: 18px;
   font-weight: normal;
+  max-height: 200px;
+  overflow-y: scroll;
+
 }
 
 .Tooltip .Tooltiptext2 { /*As per above, but spawns to the LEFT!*/
@@ -99,8 +104,51 @@ textarea{ /*As per above, due to the large nature of this object, font size is s
   position: absolute;
   z-index: 1;
   top: -5px;
-  right: 105%; /*Main bit that makes it spawn to the left*/
+  right: 100%; /*Main bit that makes it spawn to the left*/
   min-width: 200px;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.Tooltip .Tooltiptext21 { /*As per above, but spawns to the LEFT!*/
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 2px;
+  font-size: 18px;
+  font-weight: normal;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%; /*This makes it spawn above*/
+  right: 20%;
+  margin-left: 100px;
+  min-width: 200px;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.Tooltip .Tooltiptext0 { /*As per above, but spawns to the RIGHT!*/
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 2px;
+  font-size: 18px;
+  font-weight: normal;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 100%; /*Main bit that makes it spawn to the left*/
+  min-width: 200px;
+  max-height: 200px;
+  overflow-y: scroll;
 }
 
 /*The following 3 make tooltiptext visible when the tooltip text is hovered over. Right? Right. */
@@ -111,6 +159,14 @@ textarea{ /*As per above, due to the large nature of this object, font size is s
   visibility: visible;
 }
 .Tooltip:hover .Tooltiptext2 {
+  visibility: visible;
+}
+
+.Tooltip:hover .Tooltiptext21 {
+  visibility: visible;
+}
+
+.Tooltip:hover .Tooltiptext0 {
   visibility: visible;
 }
 
@@ -141,7 +197,6 @@ tr{ /*Generic row, I like the ridge border, that's it*/
 }
 
 #SectionCell{ /*Class for table cell headers, bolded, slightly bigger text*/
-  font-weight: bold;
   font-size: 20px;
 }
 
@@ -156,4 +211,9 @@ p{ /*Generic text details*/
   font-family: 'Times New Roman', Times, serif;
   font-size: 18px;
   color: #dddddd;
+}
+
+.StandAloneText{ /*Text that is meant to be read as-is on a page.*/
+  padding: 5px;
+  text-align: left;
 }
