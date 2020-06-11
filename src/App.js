@@ -8,7 +8,6 @@ import NavComponent from './Etc/NavComponent';
 import { About } from './Pages/About';
 import { Details } from './Pages/Details';
 import { Encounters } from './Pages/Encounters';
-import { Maps } from './Pages/Maps';
 import {Upload} from './Pages/Upload';
 import { Setting } from './Pages/Setting';
 import{Ad} from './Pages/Ad';
@@ -25,7 +24,6 @@ function App() {
         <Route path="/About" component={About} />
         <Route path="/Details" component={Details} />
         <Route path="/Encounters" component={Encounters} />
-        <Route path="/Maps" component={Maps} />
         <Route path="/Upload" component={Upload} />
         <Route path="/Setting" component={Setting} />
         </Switch>

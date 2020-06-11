@@ -14,7 +14,6 @@ const NavComponent = () => {
                     <ButtonGroup>
                         <Button tag={Link} to="/Quick_Tools">Quick Tools</Button>
                         <Button tag={Link} to="/Details">Details</Button>
-                        <Button tag={Link} to="/Maps">Maps</Button>
                         <Button tag={Link} to="/Encounters">Encounters</Button>
                         <Button tag={Link} to="/About">About</Button>
                         <Button tag={Link} to="/Setting">Setting</Button>
