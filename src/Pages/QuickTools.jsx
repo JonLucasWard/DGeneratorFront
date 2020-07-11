@@ -8,6 +8,7 @@ import {axios, errorLogger} from '../Etc/axiosU';
 import {Event} from '../Models/Event';
 import {Room} from '../Models/Room';
 import {Building} from '../Models/Building';
+import {Quest} from '../Models/Quest';
 
 const callPerson = "/Person/";
 const callQuick = "/QTools/";
@@ -23,6 +24,8 @@ export class QuickTools extends React.Component {
             eventVal: "Travel",
             roomTab: false,
             buildingTab: false,
+            questTab: false,
+            questTags: "--ANY--",
             magicItemSetting: {
                 cursed: false,
                 powerNumber: 0,
@@ -32,7 +35,8 @@ export class QuickTools extends React.Component {
             magicItem: [],
             events: [],
             buildings: [],
-            rooms: []
+            rooms: [],
+            quests: []
         };
         this.toggle = this.toggle.bind(this);
         this.makePerson = this.makePerson.bind(this);
@@ -45,6 +49,7 @@ export class QuickTools extends React.Component {
         this.handleCurseLevel = this.handleCurseLevel.bind(this);
         this.handlePowerLevel = this.handlePowerLevel.bind(this);
         this.handleEventVal = this.handleEventVal.bind(this);
+        this.handleQuestTags = this.handleQuestTags.bind(this);
     }
 
     toggle(e){ //for the buttons which trigger the Collapse component, allowing more things to populate and be seen
@@ -106,6 +111,16 @@ export class QuickTools extends React.Component {
             errorLogger(error);});
     }
 
+    makeQuest(e){
+        axios.get(callQuick+"quest/"+this.state.questTags).then(response => {
+            let quest = response.data;
+            let setQuest = this.state.rooms.concat(quest);
+            this.setState({'quests': setQuest});
+        }).catch(error =>{
+            errorLogger(error);
+        });
+    }
+
     handleCriminal(event){
         this.setState({criminal: event.target.checked});
     }
@@ -127,6 +142,10 @@ export class QuickTools extends React.Component {
 
     handleEventVal(e){
         this.setState({eventVal: e.target.value});
+    }
+
+    handleQuestTags(e){
+        this.setState({questTags: e.target.value});
     }
 
     loadData(key){ //load data from the state
@@ -171,6 +190,13 @@ export class QuickTools extends React.Component {
                     return holdme;
                 } 
             break;
+            case 'quest':
+                if(this.state.quests != null){
+                    let holdme = Object.keys(this.state.quests).map(x =>
+                        <Quest key={x} number={x} building = {this.state.quests[x]}/>);
+                        return holdme;
+                }
+                break;
             default: break;
         }
     }
@@ -207,6 +233,11 @@ export class QuickTools extends React.Component {
                     return <Button id="makeRoom" onClick={this.makeRoom}>Get Room</Button>
                 }
                 break;
+            case 'quest':
+                if(this.state.quests === undefined || this.state.quests.length === 0){
+                } else {
+                    return <div><p>Limit the options?:</p><input type="text" id="tags" value={this.state.questTags} onChange={this.handleQuestTags}></input><Button id="makeQuest" value={this.state.questTags} onClick={this.makeQuest}>Make Quest</Button></div>
+                }
             default: break;
         }
     }
@@ -304,6 +335,29 @@ export class QuickTools extends React.Component {
             <Button id="makeRoom" onClick={this.makeRoom}>Get Room</Button>
                 {this.loadData("rooms")}
                 {this.bottomButtons("rooms")}
+        </Collapse>
+
+        <h3 style={{width:"100%", display:"inline-block"}}
+        //h3 tag to hold buttons that will show more content on the page. Width 100% to take up size of main "app space". Inline-block so that they are the same height
+        //as their children
+        >
+            <div style={{float:"left"}}
+            //move button to far left side of app screen
+            >
+                <Button id="questTab" value={this.state.questTab} onClick={this.toggle}
+                //Use reactstrap button and add id and value attributes, both lining up with state key-values, on click call the toggle function, element data is automatically passed
+                >Quests</Button>
+                {this.arrow("questTab")
+                //call arrow function, passing in desired key name as a string
+            }
+            </div>
+        </h3>
+
+        <Collapse isOpen={this.state.questTab}>
+            <p>Limit the options?:</p><input type="text" id="tags" value={this.state.questTags} onChange={this.handleQuestTags}></input>
+            <Button id="makeQuest" value={this.state.questTags} onClick={this.makeQuest}>Make Quest</Button>
+            {this.loadData("quest")}
+            {this.bottomButtons('quest')}
         </Collapse>
 
          </div>
