@@ -92,7 +92,7 @@ export class Setting extends React.Component {
     loadData(key){ //load data from the state
         switch(key){
             case 'civilization':
-                if(this.state.civilization != null){ //check for civlization, if there isn't one, don't do anything
+                if(this.state.civilization.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = Object.keys(this.state.civilization).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
                         <Civilization key={x} number={x} civilization ={this.state.civilization[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                     );
@@ -100,13 +100,13 @@ export class Setting extends React.Component {
                 }
                 break;
             case 'EndOfTheWorld':
-                if(this.state.EndOfTheWorld != null){
+                if(this.state.EndOfTheWorld !== null){
                     let holdme = <div className="StandAloneText"><p className='Tooltip'>Relative to the "end of the world", this setting is: {this.state.EndOfTheWorld.Timing}<span className='Tooltiptext'>{this.state.EndOfTheWorld.TimingExplanation}</span></p><br/><p className='Tooltip'>The end of the world is: {this.state.EndOfTheWorld.EndType}<span className='Tooltiptext'>{this.state.EndOfTheWorld.EndTypeExplanation}</span></p></div>
                     return holdme;
                 }
                 break;
             case 'religion':
-                if(this.state.religion != null){ //check for civlization, if there isn't one, don't do anything
+                if(this.state.religion.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = Object.keys(this.state.religion).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
                         <Religion key={x} number={x} religion ={this.state.religion[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                     );
@@ -114,7 +114,7 @@ export class Setting extends React.Component {
                 }
                 break;
             case 'town':
-                if(this.state.town != null){ //check for civlization, if there isn't one, don't do anything
+                if(this.state.town.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = Object.keys(this.state.town).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
                         <Town key={x} number={x} town ={this.state.town[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                     );

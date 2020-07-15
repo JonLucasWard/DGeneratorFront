@@ -13,11 +13,10 @@ const NavComponent = () => {
                 <p>DGenerator.com For all your random needs</p>
                     <ButtonGroup>
                         <Button tag={Link} to="/Quick_Tools">Quick Tools</Button>
-                        <Button tag={Link} to="/Details">Details</Button>
+                        <Button tag={Link} to="/UserData">Tables and Upload</Button>
                         <Button tag={Link} to="/Encounters">Encounters</Button>
                         <Button tag={Link} to="/About">About</Button>
                         <Button tag={Link} to="/Setting">Setting</Button>
-                        <Button tag={Link} to="/Upload">Upload</Button>
                     </ButtonGroup>
                 </Container>
             </AppBar>

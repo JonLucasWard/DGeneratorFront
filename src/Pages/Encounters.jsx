@@ -6,6 +6,7 @@ import {axios, errorLogger} from '../Etc/axiosU';
 import {Dungeon} from '../Models/Dungeon';
 import {D5eEncounter} from '../Models/D5eEncounter';
 import {Trap} from '../Models/Trap';
+import {Treasure} from '../Models/Treasure';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 
 const callEncounter = "/Encounter/";
@@ -63,7 +64,7 @@ export class Encounters extends React.Component {
                 //http://www.thepeoplehistory.com/70yearsofpricechange.html
                 //https://www.eia.gov/totalenergy/data/annual/showtext.php?t=ptb0810
 
-                ValueofFantasyFood: 1.5, //1 meal cost, * 3 for 1 day of food. 5sp for a DnD 5e ration, * 3 = 1.5 gold
+                ValueofFantasyFood: 0.3, //1 meal cost, * 3 for 1 day of food. 3sp for 3 modest 5e meals a day
                 ValueofFantasyShelter: 0.5, //cost for a room night, kept as-is, 5sp for DND 5e modest room, 0.5 gold. This is ridiculous
                 ValueofFantasyEnergy: 0.2, //treat "energy" as leisure, assumed that it is entertainment for 1 day, 5e common wine is 0.2
                 
@@ -89,7 +90,8 @@ export class Encounters extends React.Component {
             dungeons: [],
             DnD5eEncounters: [],
             traps: [],
-            treasures: []
+            treasures: [],
+            treasuresVal: []
         }
         this.toggle = this.toggle.bind(this);
         this.makeDungeon = this.makeDungeon.bind(this);
@@ -98,6 +100,7 @@ export class Encounters extends React.Component {
         this.make5eEncounter =this.make5eEncounter.bind(this);
         this.handle5eSettings = this.handle5eSettings.bind(this);
         this.handle5ePartyRow = this.handle5ePartyRow.bind(this);
+        this.handleTreasureSettings = this.handleTreasureSettings.bind(this);
         this.handle5ePlayerNumberAdvantage = this.handle5ePlayerNumberAdvantage.bind(this);
         this.handle5eRested = this.handle5eRested.bind(this);
         this.handle5eEncDifficulty = this.handle5eEncDifficulty.bind(this);
@@ -143,11 +146,38 @@ export class Encounters extends React.Component {
     }
 
     makeTreasure(e){
-        axios.get(callEncounters+"treasure/"+this.state.TreasureSettings.NumItems).then(response=>{
+        axios.get(callEncounter+"treasure/"+this.state.TreasureSettings.NumItems).then(response=>{
             let items = response.data;
             let setItems = this.state.treasures.concat(items);
-            this.setState({'treasures': setItems});
+            let vlength = this.state.TreasureSettings.NumItems;
+            let vals = [];
+            let countItems = this.state.TreasureSettings.NumItems/100;
+
+            let fantasyDay = this.state.TreasureSettings.ValueofFantasyFood + this.state.TreasureSettings.ValueofFantasyShelter + this.state.TreasureSettings.ValueofFantasyEnergy;
+            let totalValue = this.state.TreasureSettings.NumPeople * fantasyDay * this.state.TreasureSettings.NumDays;
+            let newTotal = totalValue;
+            let val;
+
+            if(vlength === 1){
+                vals.push(totalValue);
+            } else{
+                for(let i = 0; i < vlength; i++){
+                    if(i === vlength-1){
+                        newTotal = Math.floor(newTotal*100)/100;
+                        vals.push(newTotal);
+                    } else{
+                    val = Math.floor((Math.random() * (newTotal-countItems) )*100)/100;
+                    newTotal -= val;
+                    countItems -= 0.01;
+                    vals.push(val);
+                    }
+                }
+            }
+
+            let setVals = this.state.treasuresVal.concat([vals]);
+            this.setState({'treasures': setItems, 'treasuresVal': setVals});
         }).catch(error =>{
+            console.log(error);
             errorLogger(error);
         });
     }
@@ -229,10 +259,10 @@ export class Encounters extends React.Component {
             case "No":
                 break;
             case "Short Rested":
-                xpTotal = xpTotal * 1.5;
+                xpTotal = xpTotal * 1.25;
                 break;
             case "Long Rested":
-                xpTotal = xpTotal * 2;
+                xpTotal = xpTotal * 1.5;
                 break;
             default:
                 break;
@@ -264,7 +294,7 @@ export class Encounters extends React.Component {
     loadData(key){
         switch(key){
             case 'dungeon':
-                if(this.state.dungeons != null){ //check for civlization, if there isn't one, don't do anything
+                if(this.state.dungeons.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = Object.keys(this.state.dungeons).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
                         <Dungeon key={x} number={x} dungeon ={this.state.dungeons[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                     );
@@ -272,7 +302,7 @@ export class Encounters extends React.Component {
                 }
                 break;
             case '5eEncounter':
-                if(this.state.DnD5eEncounters != null){
+                if(this.state.DnD5eEncounters.length !== 0){
                     let holdme = Object.keys(this.state.DnD5eEncounters).map(x =>
                         <D5eEncounter key={x} number={x} encounter={this.state.DnD5eEncounters[x]}/>
                         );
@@ -280,7 +310,7 @@ export class Encounters extends React.Component {
                 }
                 break;
             case '5eParty':
-                if(this.state.D5ePartyXPCalc != null){
+                if(this.state.D5ePartyXPCalc.length !== 0){
                     let holdme = this.state.D5ePartyXPCalc.map((x, index)=>
                         <div>Number of players:<input id={`${index} Num`} value={this.state.D5ePartyXPCalc[index]['numPlayers']} type="number" min="0" onChange={this.handle5ePartyRow}></input>Level of players:<input id={`${index} Level`} type="number" min="1" value={this.state.D5ePartyXPCalc[index]['level']} onChange={this.handle5ePartyRow}></input></div>
                         );
@@ -288,16 +318,16 @@ export class Encounters extends React.Component {
                 }
                 break;
             case 'trap':
-                if(this.state.traps != null){
+                if(this.state.traps.length !== 0){
                     let holdme = Object.keys(this.state.traps).map(x =>
                         <Trap key={x} number={x} trap={this.state.traps[x]}/>);
                     return holdme;
                 }
                 break;
             case 'treasure':
-                if(this.state.treasures != null){
+                if(this.state.treasures.length !== 0){
                     let holdme = Object.keys(this.state.treasures).map(x =>
-                        <Treasure key={x} number={x} settings={this.state.TreasureSettings} treasure={this.state.treasures[x]}/>);
+                        <Treasure key={x} number={x} treasuresVal={this.state.treasuresVal[x]} treasureSettings={this.state.TreasureSettings} treasure={this.state.treasures[x]}/>);
                     return holdme;
                     }
                 break;
@@ -329,7 +359,6 @@ export class Encounters extends React.Component {
             case 'treasure':
                 if(this.state.treasures === undefined || this.state.treasures.length === 0){}
                 else{
-                    //I NEED MY BUTTONS
                 }
                 break;
             default:
@@ -366,7 +395,7 @@ export class Encounters extends React.Component {
                 </div>
             </h3>
 
-            <Collapse isOpen={this.state.dungeonTab}>
+            <Collapse isOpen={this.state.trapTab}>
                 <Button id="makeTrap" onClick={this.makeTrap}>Set Trap</Button>
                 {this.loadData("trap")}
                 {this.bottomButtons("trap")}
@@ -381,18 +410,18 @@ export class Encounters extends React.Component {
                 </div>
             </h3>
 
-            <Collapse isOpen={this.state.dungeonTab}>
+            <Collapse isOpen={this.state.treasureTab}>
                 <p>Please use only a single currency, such as gold coins or USD. Mixed currencies will not work. So: 1.5 GP instead of 1 gold and 5 silver. Or $1.50 instead of 1 dollar and 50 cents.</p>
-                <p>Cost of a meal in your setting:</p><input type="text" id="ValueofFantasyFood" value={this.state.TreasureSettings.ValueofFantasyFood} onChange={this.handleTreasureSettings}></input>
-                <p>Cost of a day's shelter in your setting (inns/hotels for adventurers, daily rent/maintenance for average folk):</p><input type="text" id="ValueofFantasyShelter" value={this.state.TreasureSettings.ValueofFantasyShelter} onChange={this.handleTreasureSettings}></input>
-                <p>Cost of a leisure item, or day's travel/electricity (something to estimate daily leisure or energy costs):</p><input type="text" id="ValueofFantasyEnergy" value={this.state.TreasureSettings.ValueofFantasyEnergy} onChange={this.handleTreasureSettings}></input>
+                <p>Cost of a meal in your setting:</p><input  type="number" min="0" step="0.01" id="ValueofFantasyFood" value={this.state.TreasureSettings.ValueofFantasyFood} onChange={this.handleTreasureSettings}></input>
+                <p>Cost of a day's shelter in your setting (inns/hotels for adventurers, daily rent/maintenance for average folk):</p><input type="number" min="0" step="0.01" id="ValueofFantasyShelter" value={this.state.TreasureSettings.ValueofFantasyShelter} onChange={this.handleTreasureSettings}></input>
+                <p>Cost of a leisure item, or day's travel/electricity (something to estimate daily leisure or energy costs):</p><input  type="number" min="0" step="0.01" id="ValueofFantasyEnergy" value={this.state.TreasureSettings.ValueofFantasyEnergy} onChange={this.handleTreasureSettings}></input>
                 <p>Number of People whose living can be supported with this treasure horde:</p><input type="text" id="NumPeople" value={this.state.TreasureSettings.NumPeople} onChange={this.handleTreasureSettings}></input>
-                <p>How many days these people can have their living supported for?</p><input type="text" id="NumDays" value={this.state.TreasureSettings.NumDays} onChange={this.handleTreasureSettings}></input>
-                <p>How many items of treasure do you want to make?</p><input type="text" id="NumItems" value={this.state.TreasureSettings.NumItems} onChange={this.handleTreasureSettings}></input>
+                <p>How many days these people can have their living supported for?</p><input type="number" min="1" id="NumDays" value={this.state.TreasureSettings.NumDays} onChange={this.handleTreasureSettings}></input>
+                <p>How many items of treasure do you want to make?</p><input type="number" min="1" id="NumItems" value={this.state.TreasureSettings.NumItems} onChange={this.handleTreasureSettings}></input>
 
                 <Button id="makeTreasure" onClick={this.makeTreasure}>FindTreasure</Button>
                 {this.loadData("treasure")}
-                {this.bottomButtons("treasure")}
+                {/*No bottom buttons here, add them once the above is streamlined better*/}
             </Collapse>
 
             <h3 style={{width: "100%", display:"inline-block"}}>

@@ -6,9 +6,8 @@ import './App.css';
 import { QuickTools } from './Pages/QuickTools';
 import NavComponent from './Etc/NavComponent';
 import { About } from './Pages/About';
-import { Details } from './Pages/Details';
 import { Encounters } from './Pages/Encounters';
-import {Upload} from './Pages/Upload';
+import {UserData} from './Pages/UserData';
 import { Setting } from './Pages/Setting';
 import{Ad} from './Pages/Ad';
 
@@ -22,9 +21,8 @@ function App() {
       <Switch>
         <Route path="/Quick_Tools" component={QuickTools} />
         <Route path="/About" component={About} />
-        <Route path="/Details" component={Details} />
         <Route path="/Encounters" component={Encounters} />
-        <Route path="/Upload" component={Upload} />
+        <Route path="/UserData" component={UserData} />
         <Route path="/Setting" component={Setting} />
         </Switch>
     </div>

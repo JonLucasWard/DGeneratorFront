@@ -40,6 +40,7 @@ export class QuickTools extends React.Component {
         };
         this.toggle = this.toggle.bind(this);
         this.makePerson = this.makePerson.bind(this);
+        this.makeQuest = this.makeQuest.bind(this);
         this.makeMagicItem = this.makeMagicItem.bind(this);
         this.makeEvent = this.makeEvent.bind(this);
         this.makeBuilding = this.makeBuilding.bind(this);
@@ -114,7 +115,7 @@ export class QuickTools extends React.Component {
     makeQuest(e){
         axios.get(callQuick+"quest/"+this.state.questTags).then(response => {
             let quest = response.data;
-            let setQuest = this.state.rooms.concat(quest);
+            let setQuest = this.state.quests.concat(quest);
             this.setState({'quests': setQuest});
         }).catch(error =>{
             errorLogger(error);
@@ -151,7 +152,7 @@ export class QuickTools extends React.Component {
     loadData(key){ //load data from the state
         switch(key){
             case 'person':
-                if(this.state.person != null){ //check for civlization, if there isn't one, don't do anything
+                if(this.state.person.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = Object.keys(this.state.person).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
                         <Person key={x} number={x} person ={this.state.person[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                     );
@@ -159,7 +160,7 @@ export class QuickTools extends React.Component {
                 }
                 break;
             case 'magicItem':
-                if(this.state.magicItem != null){ //check for civlization, if there isn't one, don't do anything
+                if(this.state.magicItem.length !== 0){ //check for civlization, if there isn't one, don't do anything
                 let holdme = Object.keys(this.state.magicItem).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
                     <MagicItem key={x} number={x} magicItem ={this.state.magicItem[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                 );
@@ -167,7 +168,7 @@ export class QuickTools extends React.Component {
             }
             break;
             case 'events':
-                if(this.state.events !=null){
+                if(this.state.events.length !== 0){
                     let holdme = Object.keys(this.state.events).map(x =>
                         <Event key={x} number={x} type ={this.state.eventVal} event ={this.state.events[x]} />
                     );
@@ -175,7 +176,7 @@ export class QuickTools extends React.Component {
             }
             break;
             case 'rooms':
-                if(this.state.rooms != null){
+                if(this.state.rooms.length !== 0){
                     let holdme = Object.keys(this.state.rooms).map(x =>
                       <Room key={x} number={x} room = {this.state.rooms[x]}/>  
                     );
@@ -183,7 +184,7 @@ export class QuickTools extends React.Component {
                 }
             break;
             case 'buildings':
-                if(this.state.buildings != null){
+                if(this.state.buildings.length !== 0){
                     let holdme = Object.keys(this.state.buildings).map(x =>
                       <Building key={x} number={x} building = {this.state.buildings[x]}/>  
                     );
@@ -191,9 +192,9 @@ export class QuickTools extends React.Component {
                 } 
             break;
             case 'quest':
-                if(this.state.quests != null){
+                if(this.state.quests.length !== 0){
                     let holdme = Object.keys(this.state.quests).map(x =>
-                        <Quest key={x} number={x} building = {this.state.quests[x]}/>);
+                        <Quest key={x} number={x} quest = {this.state.quests[x]}/>);
                         return holdme;
                 }
                 break;
@@ -238,6 +239,7 @@ export class QuickTools extends React.Component {
                 } else {
                     return <div><p>Limit the options?:</p><input type="text" id="tags" value={this.state.questTags} onChange={this.handleQuestTags}></input><Button id="makeQuest" value={this.state.questTags} onClick={this.makeQuest}>Make Quest</Button></div>
                 }
+                break;
             default: break;
         }
     }
