@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
+import {Table, TableBody, TableCell, TableContainer, TableRow} from '@material-ui/core';
 
 export class Quest extends React.Component {
     constructor(props){ //inherit properties of parent, ideally this should be the Setting component
