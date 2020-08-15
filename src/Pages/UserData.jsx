@@ -24,6 +24,7 @@ export class UserData extends React.Component {
         this.getTable = this.getTable.bind(this);
         this.makeEdit = this.makeEdit.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.makeNew = this.makeNew.bind(this);
     }
 
     handleEdit(e){
@@ -35,10 +36,11 @@ export class UserData extends React.Component {
             }
         }
         let objecto = {...this.state.editMe, [key]: value};
-        if(isNewUpload === true && key === "id"){ //allow id to be blank
-            object = {"id": null}
+        if(this.state.isNewUpload === true && key === "id"){ //allow id to be blank
+            objecto = {...this.state.editMe, "id": null}
         }
         this.setState({editMe: objecto});
+        console.log(this.state.editMe);
         return;
     }
 
@@ -82,6 +84,7 @@ export class UserData extends React.Component {
         axios.get(UD+"getTable/"+this.state.table.tableName+"/"+this.state.table.min+"/"+this.state.table.max).then(response=>{
             let dataGet = response.data;
             this.setState({'data': dataGet});
+            this.makeNew(e);
         }).catch(error => {
             errorLogger(error);
         });
@@ -92,7 +95,6 @@ export class UserData extends React.Component {
             case 'table':
             if(this.state.data.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = <DataTable tableName = {this.state.table.tableName} data={this.state.data} makeEdit={this.makeEdit}/> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
-                    this.makeNew;
                     return holdme; //that list of Civilization components is added to the holdMe object, we now pass that object which is loaded with JSX, it will populate the page
                 } else {
                     let holdme = <p>No call was made yet. Or there was no data for that table/page.</p>
@@ -101,7 +103,7 @@ export class UserData extends React.Component {
                 break;
             case 'editMe':
                 if(this.state.editMe.length !== 0){
-                    let holdme = <div><UpdateSection data={this.state.editMe} handleEdit={this.handleEdit}/><Button value={this.state.editMe} onClick={() => this.uploadRow()}>Upload</Button></div>
+                    let holdme = <div><UpdateSection data={this.state.editMe} handleEdit={this.handleEdit} new={this.state.isNewUpload}/><Button value={this.state.editMe} onClick={() => this.uploadRow()}>Upload</Button></div>
                     return holdme;
                 } else{
                 }

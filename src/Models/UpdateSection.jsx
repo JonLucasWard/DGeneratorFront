@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
-import {Button} from 'reactstrap';
 
 export class UpdateSection extends React.Component {
     constructor(props){ //inherit properties of parent, ideally this should be the Setting component
@@ -17,6 +16,14 @@ export class UpdateSection extends React.Component {
             </TableCell>
             );
         return holdMe;
+    }
+
+    checkNew(key){
+        if(this.props.new){
+            return "adding a new entry";
+        } else {
+            return "updating the current id entry";
+        }
     }
 
     checkNum(key){
@@ -49,6 +56,11 @@ export class UpdateSection extends React.Component {
         return (
         <TableContainer className="ObjectDisplay"> {/*Create a container to hold this whole table thing, class gives some basic values for CSS*/}
             <Table style={{border:"solid"}}> {/*The actual table, we give it a solid border so it's clear*/}
+            <TableHead>
+                <TableRow>
+                    <TableCell><p>You are {this.checkNew()}</p></TableCell>
+                </TableRow>
+            </TableHead>
                 <TableBody>
                     <TableRow>
                         {this.startColumns()}
