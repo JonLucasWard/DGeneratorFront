@@ -11,6 +11,7 @@ export class UserData extends React.Component {
         super(props);
         this.state = {
             data: [],
+            isNewUpload: true,
             editMe: [],
             table: {
                 tableName: "age",
@@ -34,6 +35,9 @@ export class UserData extends React.Component {
             }
         }
         let objecto = {...this.state.editMe, [key]: value};
+        if(isNewUpload === true && key === "id"){ //allow id to be blank
+            object = {"id": null}
+        }
         this.setState({editMe: objecto});
         return;
     }
@@ -41,6 +45,15 @@ export class UserData extends React.Component {
     makeEdit(e){
         let objecto = this.state.data[e];
         this.setState({editMe: objecto});
+        this.setState({isNewUpload:false})
+        return;
+    }
+
+    makeNew(e){
+        let objecto = this.state.data[0];
+        this.setState({editMe: objecto});
+
+        this.setState({isNewUpload:true});
         return;
     }
 
@@ -79,6 +92,7 @@ export class UserData extends React.Component {
             case 'table':
             if(this.state.data.length !== 0){ //check for civlization, if there isn't one, don't do anything
                     let holdme = <DataTable tableName = {this.state.table.tableName} data={this.state.data} makeEdit={this.makeEdit}/> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
+                    this.makeNew;
                     return holdme; //that list of Civilization components is added to the holdMe object, we now pass that object which is loaded with JSX, it will populate the page
                 } else {
                     let holdme = <p>No call was made yet. Or there was no data for that table/page.</p>

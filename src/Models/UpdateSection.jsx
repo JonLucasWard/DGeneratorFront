@@ -7,6 +7,7 @@ export class UpdateSection extends React.Component {
         super(props); //apply the properties of the parent component
         this.data = props.data; //assign a unique prop value, inherited from parent
         this.handleEdit = props.handleEdit;
+        this.new = props.new;
     }
 
     startColumns(){ //list names of the columns
@@ -27,12 +28,21 @@ export class UpdateSection extends React.Component {
     }
 
     startDataCells(){ //create specific cells of data
+        if(this.props.new){
+            let holdMe = Object.keys(this.props.data).map(key =>
+                <TableCell>
+                <input type={this.checkNum(key)} min="1" onChange={this.props.handleEdit} name={key} value={null}/>
+                </TableCell>
+            );
+            return holdMe;
+        } else{
         let holdMe = Object.keys(this.props.data).map(key =>
             <TableCell>
             <input type={this.checkNum(key)} min="1" onChange={this.props.handleEdit} name={key} value={this.props.data[key]}/>
             </TableCell>
         );
         return holdMe;
+    }
     }
 
     render(){
