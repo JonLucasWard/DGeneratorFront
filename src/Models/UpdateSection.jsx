@@ -58,7 +58,7 @@ export class UpdateSection extends React.Component {
             <Table style={{border:"solid"}}> {/*The actual table, we give it a solid border so it's clear*/}
             <TableHead>
                 <TableRow>
-                    <TableCell><p>You are {this.checkNew()}</p></TableCell>
+                    <TableCell colSpan={Object.keys(this.props.data).length+1}><p>You are {this.checkNew()}</p></TableCell>
                 </TableRow>
             </TableHead>
                 <TableBody>
