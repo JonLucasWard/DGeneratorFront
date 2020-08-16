@@ -58,7 +58,7 @@ export class Trap extends React.Component {
                             <p className='Tooltip'># Steps to Stop:  
                                 <span className='Tooltiptext'>How complicated the trap is, and how many different tasks are required to "beat" the trap or otherwise break it down.</span>
                             </p>    
-                            <p className='Tooltip'>{Math.floor(Math.random()*10+1)}</p>
+                            <p className='Tooltip'>{Math.floor(Math.random()*10+1)}</p> {/**Random number between 0 and 1, * 10 to set it to base 10, +1 for minimum of 1. Then we floor it to lower number to not have decimal */}
                             {/*random number between 1 and 10 steps*/}
                         </TableCell>
                     </TableRow>

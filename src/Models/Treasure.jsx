@@ -12,16 +12,18 @@ export class Treasure extends React.Component {
 
     calcRealWorldValue(number, base){
         let fantasyDay = this.props.treasureSettings.ValueofFantasyFood + this.props.treasureSettings.ValueofFantasyShelter + this.props.treasureSettings.ValueofFantasyEnergy;
+        //above is expected amount that someone is supposed to spend in a given day to survive and have an "average" life
         let irlConversion = (this.props.treasureSettings.CPIofFood + this.props.treasureSettings.CPIofShelter + this.props.treasureSettings.CPIofEnergy)/fantasyDay;
+        //convert the fantasy day into equivalent numbers of modern life, for easier understanding of players
         
         
-        if(base === 0){
-        let val = irlConversion * this.props.treasuresVal[number];
-        val = Math.floor(val*100)/100;
+        if(base === 0){ //I already don't remember why this base is here, guess that it is NOT the base value?
+        let val = irlConversion * this.props.treasuresVal[number]; //value of item in IRL
+        val = Math.floor(val*100)/100; //clean the number to 2 decimal places
         return val;
         } else {
-            let val = irlConversion*1;
-            val = Math.floor(val*100)/100;
+            let val = irlConversion*1; //just the IRL price of a day
+            val = Math.floor(val*100)/100; //clean the number to 2 decimal places
             return val;
         }
     }
@@ -35,7 +37,7 @@ export class Treasure extends React.Component {
                     </TableCell>
                     <TableCell>
   
-                    <p className='Tooltip'>{this.props.treasuresVal[key]}
+                    <p className='Tooltip'>{this.props.treasuresVal[key]} {/*Price of the item in fantasy land, given straight*/}
                             </p>
                     </TableCell>
                     <TableCell>

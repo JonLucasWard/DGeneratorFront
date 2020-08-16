@@ -8,9 +8,9 @@ export class Religion extends React.Component {
         this.number = Number(props.number)+1; //likewise, a number property, props must be forced to be treated as a number to count correctly according to humans
     }
 
-    loadList(y){ //create a list of biomes
-        let holdMe = Object.keys(this.props.religion[y]).map(key => //take civilization props, mapping the list of Biomes
-            <TableRow className="SubThirdsRow"><TableCell align="center" className="SubThirdsCell" key = {key}> {/*create a list of rows and cells with biomes*/}
+    loadList(y){ //create a list of themes
+        let holdMe = Object.keys(this.props.religion[y]).map(key => //take civilization props, mapping the list of themes
+            <TableRow className="SubThirdsRow"><TableCell align="center" className="SubThirdsCell" key = {key}> {/*create a list of rows and cells with themes*/}
                 <p>{this.props.religion[y][key]}</p></TableCell>
             </TableRow>
         );

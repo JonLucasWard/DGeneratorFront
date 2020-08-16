@@ -9,9 +9,9 @@ import {Trap} from '../Models/Trap';
 import {Treasure} from '../Models/Treasure';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 
-const callEncounter = "/Encounter/";
+const callEncounter = "/Encounter/"; //to be regularly appended to URL on this page
 
-const PlayerXPMap={
+const PlayerXPMap={ //list CRs and difficulty XPs for reference in 5e
     1: {Easy: 25, Medium: 50, Hard: 75, Deadly:100}, 2: {Easy: 50, Medium:100, Hard:150, Deadly:200}, 3: {Easy:75, Medium:150, Hard:225, Deadly:400}, 4: {Easy:125, Medium:250, Hard: 375, Deadly:500}, 5: {Easy:250, Medium: 500, Hard: 750, Deadly: 1100},
     6:{Easy: 300, Medium: 600, Hard: 900, Deadly: 1400}, 7: {Easy:350, Medium:750, Hard: 1100, Deadly: 1700}, 8: {Easy:450, Medium: 900, Hard: 1400, Deadly: 2100}, 9:{Easy: 550, Medium: 1100, Hard: 1600, Deadly: 2400}, 10: {Easy: 600, Medium: 1200, Hard: 1900, Deadly: 2800},
     11:{Easy: 800, Medium: 1600, Hard: 2400, Deadly:3600}, 12: {Easy: 1000, Medium: 2000, Hard: 3000, Deadly: 4500}, 13: {Easy: 1100, Medium: 2200, Hard: 3400, Deadly: 5100}, 14: {Easy: 1250, Medium: 2500, Hard: 3800, Deadly:5700}, 15: {Easy:1400, Medium: 2800, Hard: 4300, Deadly: 6400},
@@ -76,9 +76,9 @@ export class Encounters extends React.Component {
                 NumItems: 1
             },
             D5eEncSettings: {
-                name: "--ANY--",
+                name: "--ANY--", //if --ANY-- is subitted, random is given back for that category, anything else will cause an absolute search
                 maxMonsters: 10,
-                crMax: 60,
+                crMax: 60, //we cap the CR at 60, beyond this can be very risky for CPU
                 crMin: 0,
                 size: "--ANY--",
                 type: "--ANY--",
@@ -93,6 +93,7 @@ export class Encounters extends React.Component {
             treasures: [],
             treasuresVal: []
         }
+        //binding functions to use the state
         this.toggle = this.toggle.bind(this);
         this.makeDungeon = this.makeDungeon.bind(this);
 
@@ -158,9 +159,9 @@ export class Encounters extends React.Component {
             let newTotal = totalValue;
             let val;
 
-            if(vlength === 1){
+            if(vlength === 1){ //if only 1 item, give it the full value
                 vals.push(totalValue);
-            } else{
+            } else{ //if many items, randomly assign values, while subtracting from the total, assign last item full value
                 for(let i = 0; i < vlength; i++){
                     if(i === vlength-1){
                         newTotal = Math.floor(newTotal*100)/100;
@@ -183,7 +184,7 @@ export class Encounters extends React.Component {
     }
 
     handleTreasureSettings(e){
-        let objecto = {...this.state.TreasureSettings};
+        let objecto = {...this.state.TreasureSettings}; /// ... means "apply what used to be the last object" you can follow up with " , NewKey: NewStuff"
         objecto[e.target.id] = e.target.value;
         this.setState({TreasureSettings: objecto});
     }

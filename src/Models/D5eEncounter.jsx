@@ -8,8 +8,8 @@ export class D5eEncounter extends React.Component {
         this.number = Number(props.number)+1; //likewise, a number property, props must be forced to be treated as a number to count correctly according to humans
     }
 
-    startAll(){
-        let holdMe = Object.keys(this.props.encounter).map(key =>
+    startAll(){ //map each value to the approriate column, each pass of the object.keys creates a new row from the given data
+        let holdMe = Object.keys(this.props.encounter).map(key => //key = # in the list
                 <TableRow>
                     <TableCell>
                         {this.props.encounter[key]["name"]}
@@ -38,17 +38,6 @@ export class D5eEncounter extends React.Component {
         return holdMe;
 
     }
-
-    startRow(x){ //same as above, but it's for Minority groups IF they get generated
-    console.log(this.props.encounter[x]["name"]);
-      let holdMe = Object.keys(this.props.encounter[x]).map(key => //iterate over the keys of a given type and create a list
-            <TableCell>
-                {this.props.encounter[x][key]}
-            </TableCell>
-       );
-
-    return holdMe; //return the JSX and render it
-}
 
     render(){
         return (

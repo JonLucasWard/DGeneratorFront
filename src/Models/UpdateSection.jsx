@@ -18,7 +18,7 @@ export class UpdateSection extends React.Component {
         return holdMe;
     }
 
-    checkNew(key){
+    checkNew(key){ //indicate to use what they are doing
         if(this.props.new){
             return "adding a new entry";
         } else {
@@ -26,7 +26,7 @@ export class UpdateSection extends React.Component {
         }
     }
 
-    checkNum(key){
+    checkNum(key){ //if it is a known number category, assign it as such, otherwise text
         if(key === "id" || key ==="cr"){
             return "number";
         } else{
@@ -35,14 +35,14 @@ export class UpdateSection extends React.Component {
     }
 
     startDataCells(){ //create specific cells of data
-        if(this.props.new){
+        if(this.props.new){ //if it is a new entry, return nulls
             let holdMe = Object.keys(this.props.data).map(key =>
                 <TableCell>
                 <input type={this.checkNum(key)} min="1" onChange={this.props.handleEdit} name={key} value={null}/>
                 </TableCell>
             );
             return holdMe;
-        } else{
+        } else{ //if we're updating, do not return nulls
         let holdMe = Object.keys(this.props.data).map(key =>
             <TableCell>
             <input type={this.checkNum(key)} min="1" onChange={this.props.handleEdit} name={key} value={this.props.data[key]}/>

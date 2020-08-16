@@ -8,9 +8,9 @@ export class MagicItem extends React.Component {
         this.number = Number(props.number)+1; //likewise, a number property, props must be forced to be treated as a number to count correctly according to humans
     }
 
-    loadList(y){ //create a list of biomes
-        let holdMe = Object.keys(this.props.magicItem[y]).map(key => //take civilization props, mapping the list of Biomes
-            <TableRow className="SubThirdsRow"><TableCell align="center" className="SubThirdsCell" style={{width: "50%"}} key = {key}> {/*create a list of rows and cells with biomes*/}
+    loadList(y){ //create a list of powers/curses
+        let holdMe = Object.keys(this.props.magicItem[y]).map(key => //map the array given here
+            <TableRow className="SubThirdsRow"><TableCell align="center" className="SubThirdsCell" style={{width: "50%"}} key = {key}> {/*create a list of rows and cells with powers or curses*/}
                 <p>{this.props.magicItem[y][key]}</p></TableCell>
             </TableRow>
         );
