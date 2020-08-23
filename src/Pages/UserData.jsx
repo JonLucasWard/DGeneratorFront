@@ -7,11 +7,11 @@ import CSVReader from 'react-csv-reader';
 import CsvDownloader from 'react-csv-downloader';
 
 const UD = '/UserData/';
-const papaparseOptions = {
-    header: true,
-    dynamicTyping: true,
-    skipEmptyLines: true,
-    transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
+const papaparseOptions = { //how we want the csv reader to read
+    header: true, //ignore first line, treat it as object keys
+    dynamicTyping: true, //I honestly don't know
+    skipEmptyLines: true, //If empty row, ignore it completely, does not ignore spaces
+    transformHeader: header => header.toLowerCase().replace(/\W/g, "_") //set headers to lowercase, important to match with database that does the same thing
   };
 
 export class UserData extends React.Component {
@@ -44,28 +44,27 @@ export class UserData extends React.Component {
     handleEdit(e){
         let key = e.target.name;
         let value = e.target.value;
-        if(key === "cr"){
+        if(key === "cr"){ //CR max is 60, having it be higher risks CPU issues
             if(value > 60){
                 value = 60;
             }
         }
         let objecto = {...this.state.editMe, [key]: value};
         if(this.state.isNewUpload === true && key === "id"){ //allow id to be blank
-            objecto = {...this.state.editMe, "id": null}
+            objecto = {...this.state.editMe, "id": null} //if id is blank, keep it as null
         }
         this.setState({editMe: objecto});
-        console.log(this.state.editMe);
         return;
     }
 
-    makeEdit(e){
+    makeEdit(e){ //Is the user editing a current value in the table? They must click "edit" next to the information they want to change
         let objecto = this.state.data[e];
         this.setState({editMe: objecto});
         this.setState({isNewUpload:false})
         return;
     }
 
-    makeNew(e){
+    makeNew(e){ //Is the user adding a new value? This is created by default
         let objecto = {...this.state.data[0]};
         Object.keys(objecto).map(key =>
             objecto[key] = null
@@ -79,7 +78,7 @@ export class UserData extends React.Component {
     handleTable(e){
         let objecto = {...this.state.table};
         objecto[e.target.name] = e.target.value;
-        if(e.target.name === "pageNum"){
+        if(e.target.name === "pageNum"){ //changing the page num will increment the IDs by 20, this is O-K for the front since the user data tables WILL have ids in order
             let newMin = 1+20*(e.target.value-1);
             let newMax = 20+20*(e.target.value-1);
             objecto["min"] = newMin;
@@ -88,7 +87,7 @@ export class UserData extends React.Component {
         this.setState({table: objecto});
     }
 
-    uploadRow(e){
+    uploadRow(e){ //send a single update to the server
         axios.post(UD+"putData/"+this.state.table.tableName, [this.state.editMe]).then(response=>{
             alert("Data sent to server.");
         }).catch(error =>{
@@ -98,11 +97,10 @@ export class UserData extends React.Component {
 
     handleFileName(e){
         let x = e.target.value;
-        console.log(x);
         this.setState({fileName: x});
     }
 
-    massUpload(data, fileInfo){
+    massUpload(data, fileInfo){ //send user submitted csv data as an object array to the server, these files SHOULD NOT include IDs and are presumed to be new entries ONLY
         console.log(fileInfo);
         axios.post(UD+"massData/"+this.state.table.tableName, data).then(response=>{
             alert("Data sent to server.");
@@ -111,7 +109,7 @@ export class UserData extends React.Component {
         });
     }
 
-    getTable(e){
+    getTable(e){ //pull 20 rows from a table, age is default table
         axios.get(UD+"getTable/"+this.state.table.tableName+"/"+this.state.table.min+"/"+this.state.table.max).then(response=>{
             let dataGet = response.data;
             this.setState({'data': dataGet});
@@ -121,7 +119,8 @@ export class UserData extends React.Component {
         });
     }
 
-    downloadTable(){
+    downloadTable(){ //download a CSV file for the whole table, will be commented out if it leads to problems
+        //file includes all fields from user table, as is displayed normally
         axios.get(UD+"wholeTable/"+this.state.table.tableName).then(response=>{
             let dataGet = response.data;
             this.setState({'massDown': dataGet});
@@ -151,19 +150,22 @@ export class UserData extends React.Component {
                 break;
             case 'MassUpload':
                 if(this.state.data.length !== 0){
+                    //details regarding React CSVReader
                     //https://codesandbox.io/s/react-csv-reader-vtull?file=/src/index.js:197-359
+                    //CSVReader is an upload button basically, we pass the file information and the data from it, it will then create an object array using that data
                     let holdme = <CSVReader parserOptions={papaparseOptions} onFileLoaded={(data, fileInfo) => this.massUpload(data, fileInfo)}/>
                     //let holdme = <div><input id="file-input" type="file" name="name" onChange={this.handleFileName} value={this.state.fileName} /><Button onClick={() => this.massUpload()}>Submit to Server</Button></div>
                     return holdme;
                 } else{}
                 break;
-            case 'DownloadTable':
+            case 'DownloadTable': //receive the object array from the server with ALL data, will be commented out if it leads to problems
                 if(this.state.data.length !== 0){
+                    //we use this to 
                     let holdme = <Button onClick={() => this.downloadTable()}>Download Data</Button>
                     return holdme;
                 }
                 break;
-            case 'DownloadFile':
+            case 'DownloadFile': //download received object array as a CSV file to the user
                 if(this.state.massDown.length !== 0){
                     let holdme = <CsvDownloader filename={this.state.table.tableName+"Download"} text="Download File" datas={this.state.massDown}/>
                     return holdme;
@@ -183,6 +185,7 @@ export class UserData extends React.Component {
                     <option value="activation"/>
                     <option value="age"/>
                     <option value="apocalypse"/>
+                    {/**Add all table names here as necessary */}
                 </datalist>
             <p>You are on page: </p><input name="pageNum" type="number" min="1" onChange={this.handleTable} value={this.state.table.pageNum}/>
             <Button onClick={this.getTable}>Get Data</Button>

@@ -12,12 +12,12 @@ import { Setting } from './Pages/Setting';
 import{Ad} from './Pages/Ad';
 
 
-function App() {
+function App() { //application as a whole
   return (
-    <HashRouter>
+    <HashRouter> {/**Element houses and displays the following components */}
       <Ad/>
-      <div className="App">
-        <NavComponent />
+      <div className="App"> {/**Actual application that the user will be concerned with */}
+        <NavComponent /> {/**Nav bar at the top, depending on what is selected, Switch will display that value */}
       <Switch>
         <Route path="/Quick_Tools" component={QuickTools} />
         <Route path="/About" component={About} />

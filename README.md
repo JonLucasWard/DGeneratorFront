@@ -1,13 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-
-TO DO NOW:
-Comment for clarity
-
 TO DO LATER:
 Refactor code for simplicity and streamlining
 Clean up CSS and add explanation text
-Implement security from inputs, includes rollback and committing to database
+Implement security from inputs
 Business features (ads, linking to work press, affiliate marketing)
 
 ## Available Scripts

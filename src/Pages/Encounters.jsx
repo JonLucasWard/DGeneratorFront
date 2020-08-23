@@ -19,19 +19,26 @@ const PlayerXPMap={ //list CRs and difficulty XPs for reference in 5e
     21:{Easy: 500, Medium: 1000, Hard: 1500, Deadly: 2000}
 }
 
+//similar maps will need to be made for each game, may be necessary to create a util file just for housing them
+
 export class Encounters extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            //tabs
             dungeonTab: false,
             encounterTab: false,
             D5eEncTab: false,
             trapTab: false,
+
+            //Difficulty setting information for DnD 5e
             D5ePartyNumRows: 0,
             D5eDifficulty: "Easy",
             D5eRestedDifficulty: "Long Rested",
             D5ePlayerNumberAdvantage: "Yes",
             D5ePartyXPCalc: [],
+
+            //Mathematics for converting fantasy values to IRL values
             TreasureSettings:{
                 //need actual CPI values for what 1 day of each of these will be
                 CPIofFood: 2.53 * 2.68439, //value of current day USA meal, can use static 1980s average meals. * Current CPI of food https://data.bls.gov/cgi-bin/surveymost 
@@ -75,6 +82,8 @@ export class Encounters extends React.Component {
                 //final values should include worth in fantasy currency and then another column for modern day USD for easier comparison/understanding
                 NumItems: 1
             },
+
+            //Actual final settings for DND 5e encounter
             D5eEncSettings: {
                 name: "--ANY--", //if --ANY-- is subitted, random is given back for that category, anything else will cause an absolute search
                 maxMonsters: 10,
@@ -87,6 +96,8 @@ export class Encounters extends React.Component {
                 source: "--ANY--",
                 XPTotal: 10000
             },
+
+            //lists of displayed items
             dungeons: [],
             DnD5eEncounters: [],
             traps: [],
@@ -97,8 +108,12 @@ export class Encounters extends React.Component {
         this.toggle = this.toggle.bind(this);
         this.makeDungeon = this.makeDungeon.bind(this);
 
-
+        //outbound calls to Database
         this.make5eEncounter =this.make5eEncounter.bind(this);
+        this.makeTrap = this.makeTrap.bind(this);
+        this.makeTreasure = this.makeTreasure.bind(this);
+
+        //handlers for information changes
         this.handle5eSettings = this.handle5eSettings.bind(this);
         this.handle5ePartyRow = this.handle5ePartyRow.bind(this);
         this.handleTreasureSettings = this.handleTreasureSettings.bind(this);
@@ -108,8 +123,7 @@ export class Encounters extends React.Component {
         this.handle5eXPTotalManual = this.handle5eXPTotalManual.bind(this);
         this.calculate5ePartyXP = this.calculate5ePartyXP.bind(this);
         this.add5ePlayerRow = this.add5ePlayerRow.bind(this);
-        this.makeTrap = this.makeTrap.bind(this);
-        this.makeTreasure = this.makeTreasure.bind(this);
+
 
     }
     
@@ -129,7 +143,7 @@ export class Encounters extends React.Component {
     makeDungeon(e){
         axios.get(callEncounter+"newDungeon").then(response=>{
             let dungeon = response.data;
-            let setDungeon = this.state.dungeons.concat(dungeon);
+            let setDungeon = this.state.dungeons.concat(dungeon); //concat adds the item to the end of the array list
             this.setState({'dungeons': setDungeon});
         }).catch(error => {
             errorLogger(error);
@@ -196,12 +210,12 @@ export class Encounters extends React.Component {
     }
 
     handle5ePartyRow(e){
-        if(e.target.id.indexOf("Level") !== -1){
+        if(e.target.id.indexOf("Level") !== -1){ //if not negative 1, assign the value for levels
             let arrayPoint = Number(e.target.id.substr(0, e.target.id.indexOf(" ")));
             let arrayObj = this.state.D5ePartyXPCalc;
             arrayObj[arrayPoint]["level"] = e.target.value;
             this.setState({D5ePartyXPCalc: arrayObj});
-        } else if(e.target.id.indexOf("Num") !== -1) {
+        } else if(e.target.id.indexOf("Num") !== -1) { //likewise but for number of players at that given level
             let arrayPoint = Number(e.target.id.substr(0, e.target.id.indexOf(" ")));
             let arrayObj = this.state.D5ePartyXPCalc;
             arrayObj[arrayPoint]["numPlayers"] = e.target.value;
@@ -209,18 +223,19 @@ export class Encounters extends React.Component {
         }
     }
 
+    //possible to refactor the following 3 as 1 method?
     handle5ePlayerNumberAdvantage(e){
         this.setState({D5ePlayerNumberAdvantage: e.target.value});
     }
-
     handle5eRested(e){
         this.setState({D5eRestedDifficulty: e.target.value});
     }
-
     handle5eEncDifficulty(e){
         this.setState({D5eDifficulty: e.target.value});
 
     }
+
+
     handle5eXPTotalManual(e){
         let x = {...this.state.D5eEncSettings, XPTotal: e.target.value};
         this.setState({D5eEncSettings: x});
@@ -229,20 +244,20 @@ export class Encounters extends React.Component {
     calculate5ePartyXP(){
         let numberOfPlayers = 0;
         let xpTotal = 0;
-        for(let i = 0; i < this.state.D5ePartyXPCalc.length; i++){
-            if(this.state.D5ePartyXPCalc[i]["level"] > 20){
+        for(let i = 0; i < this.state.D5ePartyXPCalc.length; i++){ //for each row of Level and # of party members
+            if(this.state.D5ePartyXPCalc[i]["level"] > 20){ //if level is greater than 20, apply a flat addition for each level above 20
                 xpTotal +=this.state.D5ePartyXPCalc[i]["numPlayers"] 
                 * 
                 (PlayerXPMap[20][this.state.D5eDifficulty] 
-                    + PlayerXPMap[21][this.state.D5eDifficulty]
+                    + PlayerXPMap[21][this.state.D5eDifficulty] //note that difficulty is also referred to for each of these
                     *(this.state.D5ePartyXPCalc[i]["level"] - 20) );
-            } else{
+            } else{ //if players are 20 or below, use the map value
              xpTotal += this.state.D5ePartyXPCalc[i]["numPlayers"] * PlayerXPMap[this.state.D5ePartyXPCalc[i]["level"]][this.state.D5eDifficulty];
             }
-             numberOfPlayers += this.state.D5ePartyXPCalc[i]["numPlayers"];
+             numberOfPlayers += this.state.D5ePartyXPCalc[i]["numPlayers"]; //no matter what, increase the number of players
         }
 
-        if(this.state.D5ePlayerNumberAdvantage === "Yes"){
+        if(this.state.D5ePlayerNumberAdvantage === "Yes"){ //multiply difficulty based on # of players, uses monster difficulty count
             if(numberOfPlayers >= 15){
                 xpTotal = xpTotal*4;
             } else if(numberOfPlayers >= 11){
@@ -256,7 +271,7 @@ export class Encounters extends React.Component {
             } else {}
         }
 
-        switch(this.state.D5eRestedDifficulty){
+        switch(this.state.D5eRestedDifficulty){ //multiply difficulty depending on if the party is rested or not
             case "No":
                 break;
             case "Short Rested":
@@ -269,7 +284,7 @@ export class Encounters extends React.Component {
                 break;
         }
 
-        xpTotal = Math.ceil(xpTotal);
+        xpTotal = Math.ceil(xpTotal); //round out the number
 
         let XPObj = {...this.state.D5eEncSettings, XPTotal: xpTotal};
         this.setState({D5eEncSettings: XPObj});
@@ -292,14 +307,14 @@ export class Encounters extends React.Component {
         });
     }
 
-    loadData(key){
+    loadData(key){ //load different datas depending on where we are
         switch(key){
             case 'dungeon':
-                if(this.state.dungeons.length !== 0){ //check for civlization, if there isn't one, don't do anything
-                    let holdme = Object.keys(this.state.dungeons).map(x => // there is a civ in state, get the keys of that Array and map those objects to make a number of civilization components
+                if(this.state.dungeons.length !== 0){ //check for dungeon, if there isn't one, don't do anything
+                    let holdme = Object.keys(this.state.dungeons).map(x => // there is a dungeon in state, get the keys of that Array and map those objects to make a number of dungeon components
                         <Dungeon key={x} number={x} dungeon ={this.state.dungeons[x]} /> //we must pass in key (to suppress warnings), number (count of a given Civ object in an array), and the civ object itself
                     );
-                return holdme; //that list of Civilization components is added to the holdMe object, we now pass that object which is loaded with JSX, it will populate the page
+                return holdme; //that list of dungeon components is added to the holdMe object, we now pass that object which is loaded with JSX, it will populate the page
                 }
                 break;
             case '5eEncounter':
@@ -311,7 +326,7 @@ export class Encounters extends React.Component {
                 }
                 break;
             case '5eParty':
-                if(this.state.D5ePartyXPCalc.length !== 0){
+                if(this.state.D5ePartyXPCalc.length !== 0){ //we are passing an input here with each addition
                     let holdme = this.state.D5ePartyXPCalc.map((x, index)=>
                         <div>Number of players:<input id={`${index} Num`} value={this.state.D5ePartyXPCalc[index]['numPlayers']} type="number" min="0" onChange={this.handle5ePartyRow}></input>Level of players:<input id={`${index} Level`} type="number" min="1" value={this.state.D5ePartyXPCalc[index]['level']} onChange={this.handle5ePartyRow}></input></div>
                         );
@@ -337,7 +352,7 @@ export class Encounters extends React.Component {
         }
     }
 
-    bottomButtons(key){
+    bottomButtons(key){ //for user convenience, scroll down and click a button to generate the next object
         switch(key){
             case 'dungeon':
                 if(this.state.dungeons === undefined || this.state.dungeons.length === 0){}
@@ -360,6 +375,7 @@ export class Encounters extends React.Component {
             case 'treasure':
                 if(this.state.treasures === undefined || this.state.treasures.length === 0){}
                 else{
+                    return <Button id="makeTreasure" onClick={this.makeTreasure}>FindTreasure</Button>
                 }
                 break;
             default:
@@ -369,19 +385,19 @@ export class Encounters extends React.Component {
 
     render(){
         return (
-            <div>
+            <div> {/**this div holds the rest of the component */}
             <p>This is the encounters page</p>
 
             <h3 style={{width: "100%", display:"inline-block"}}>
                 <div style={{float:"left"}}>
                     <Button id="dungeonTab" value={this.state.dungeonTab} onClick={this.toggle}>
                         Dungeon
-                    </Button>
+                    </Button> {/**All elements start as a closed tab button, click it to reveal more information */}
                     {this.arrow("dungeonTab")}
                 </div>
             </h3>
 
-            <Collapse isOpen={this.state.dungeonTab}>
+            <Collapse isOpen={this.state.dungeonTab}> {/**The information is enclosed here, normally hidden until the previous button is clicked */}
                 <Button id="makeDungeon" onClick={this.makeDungeon}>Create Dungeon</Button>
                 {this.loadData("dungeon")}
                 {this.bottomButtons("dungeon")}
